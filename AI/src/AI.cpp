@@ -5,33 +5,38 @@
 #include <chrono>
 #include "AI.h"
 
-int main()
-{
-    Network network(2, 2, 2, 5);
+int main() {
+    constexpr int sampleCount = 1000;
+    Network network(2, 4, 4, 4);
+    srand(time(0));
 
-    float* foo = new float[2];
+    /*
+    float* jeff = new float[2];
+    jeff[0] = 2;
+    jeff[1] = 123;
 
-    std::uniform_real_distribution<float> dist(-200, 200);
-
-    for (int i = 0; i < 1000000; i++) {
-        foo[0] = dist(network.GetRandom());
-        foo[0] = dist(network.GetRandom());
-        float f = network.Predict(foo);
-        if (f != 4)
-            network.AdjustRandom(0.01f);
+    for (int i = 0; i < 100; i++) {
+        std::cout << network.Predict(jeff) << " ";
+        network.AdjustRandom(1);
     }
 
+    delete[] jeff;
+    */
+    
+    std::pair<std::vector<float>, uint32_t>* samples = new std::pair<std::vector<float>, uint32_t>[sampleCount];
+    std::uniform_real_distribution<float> dist(-1000, 1000);
 
-    for (auto x : network.Weights()) {
-        std::cout << x << "\n";
+    std::vector<float> cur(2);
+
+    for (int i = 0; i < sampleCount; i++) {
+
+        cur[0] = dist(network.GetRandom());
+        cur[1] = dist(network.GetRandom());
+        samples[i] = std::pair<std::vector<float>, uint32_t>(cur, 1);
     }
-    foo[0] = 3;
-    foo[1] = 2;
-    std::cout << network.Predict(foo);
 
-    delete[] foo;
-
-
+    TrainNetwork<std::vector<float>>(network, samples, sampleCount, 100, 100);
+    std::cout << network.Predict(cur);
     /*
     * 
     auto t1 = std::chrono::high_resolution_clock::now();
