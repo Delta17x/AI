@@ -35,8 +35,7 @@ int main() {
         samples[i] = std::pair<std::vector<float>, uint32_t>(cur, 1);
     }
 
-    TrainNetwork<std::vector<float>>(network, samples, sampleCount, 100, 100);
-    std::cout << network.Predict(cur);
+    //std::cout << network.Predict(cur);
     /*
     * 
     auto t1 = std::chrono::high_resolution_clock::now();

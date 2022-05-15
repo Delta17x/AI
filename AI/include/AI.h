@@ -44,6 +44,14 @@ class Network {
 		return (x / (1 + fabsf(x)) + 1) / 2.f;
 	}
 
+	template<class ContType>
+	inline float cost(ContType out, ContType expectedOut) { // Size of each array is outputCount
+		float c = 0;
+		for (int i = 0; i < outputCount; i++) {
+			c += (out[i] - expectedOut[i]) * (out[i] - expectedOut[i]);
+		}
+		return c;
+	}
 public:
 	inline Network() : inputCount(1), hiddenLayerCount(1), hiddenNodeCount(1), outputCount(1), weights(3), nodes(3), biases(3), rand(std::random_device()()) {
 
@@ -105,7 +113,7 @@ public:
 	}
 
 	template<class InpArrayType>
-	inline uint32_t Predict(InpArrayType inps) {
+	inline std::vector<float> Predict(InpArrayType inps) {
 
 		for (uint32_t i = 0; i < inputCount; i++) {
 			nodes[i] = inps[i];
@@ -169,49 +177,12 @@ public:
 
 		delete[] lastLayerNodes, weightsToLast;
 
-		float max = 0;
-		uint32_t retIndex = 0;
-		for (uint32_t i = 0; i < outputCount; i++) {
-			if (nodes[inputCount + hiddenNodeCount * hiddenLayerCount + i] > max) {
-				retIndex = i;
-				max = nodes[inputCount + hiddenNodeCount * hiddenLayerCount + i];
-			}
-		}
+		return std::vector<float>(nodes.begin() + inputCount + hiddenNodeCount * hiddenLayerCount, nodes.begin() + inputCount + hiddenNodeCount * hiddenLayerCount + outputCount);
+	}
 
-		return retIndex;
+	template<class InpArrayType>
+	inline void TrainNetwork(std::pair<InpArrayType, uint32_t>* samples, size_t sampleCount, size_t generationCount) {
+
 	}
 };
 
-template<class InpArrayType>
-inline Network TrainNetwork(const Network& base, std::pair<InpArrayType, uint32_t>* samples, size_t sampleCount, size_t generationSize, size_t generationCount) {
-	Network* networks = new Network[generationSize];
-	for (int i = 0; i < generationSize; i++) {
-		networks[i] = base;
-	}
-	float bestScore = 0;
-	Network bestNetwork = networks[0];
-	size_t iterationsRun = 0;
-	for (int i = 0; i < generationCount; i++) {
-		for (int j = 0; j < generationSize; j++) {
-			float score = 0;
-			for (int k = 0; k < 20; k++) {
-				if (networks[j].Predict<InpArrayType>(samples[iterationsRun].first) == samples[iterationsRun].second) {
-					score++;
-				}
-				iterationsRun++;
-				if (iterationsRun >= sampleCount)
-					iterationsRun = 0;
-			}
-			if (score > bestScore) {
-				bestScore = score;
-				bestNetwork = networks[j];
-			}
-		}
-		for (int j = 0; j < generationSize; j++) {
-			networks[j] = bestNetwork;
-			networks[j].AdjustRandom(2);
-		}
-	}
-	delete[] networks;
-	return bestNetwork;
-}
