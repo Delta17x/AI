@@ -23,7 +23,7 @@ int main() {
     delete[] jeff;
     */
     
-    std::pair<std::vector<float>, uint32_t>* samples = new std::pair<std::vector<float>, uint32_t>[sampleCount];
+    std::pair<std::vector<float>, size_t>* samples = new std::pair<std::vector<float>, size_t>[sampleCount];
     std::uniform_real_distribution<float> dist(-1000, 1000);
 
     std::vector<float> cur(2);
@@ -32,8 +32,14 @@ int main() {
 
         cur[0] = dist(network.GetRandom());
         cur[1] = dist(network.GetRandom());
-        samples[i] = std::pair<std::vector<float>, uint32_t>(cur, 1);
+        samples[i] = std::pair<std::vector<float>, size_t>(cur, 2);
     }
+
+    network.TrainNetwork(samples, sampleCount, 100);
+
+    auto pred = network.Predict(cur);
+
+    std::cout << std::distance(pred.begin(), std::max_element(pred.begin(), pred.end()));
 
     //std::cout << network.Predict(cur);
     /*

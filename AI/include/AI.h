@@ -52,6 +52,31 @@ class Network {
 		}
 		return c;
 	}
+
+	template<class ContType>
+	inline float cost(ContType out, size_t expectedOut) { // Size of each array is outputCount
+		float c = 0;
+		for (int i = 0; i < outputCount; i++) {
+			if (i != expectedOut)
+				c += out[i] * out[i];
+			else {
+				c += (out[i] - 1) * (out[i] - 1);
+			}
+		}
+		return c;
+	}
+
+	template<class SampleInputArrayType>
+	inline float getAvgCost(std::pair<SampleInputArrayType, size_t>* samples, size_t sampleCount) {
+		float avgCost = 0;
+		for (int i = 0; i < sampleCount; i++) {
+			avgCost += cost<SampleInputArrayType>(Predict<SampleInputArrayType>(samples[i].first), samples[i].second);
+		}
+		avgCost /= sampleCount;
+		return avgCost;
+	}
+
+
 public:
 	inline Network() : inputCount(1), hiddenLayerCount(1), hiddenNodeCount(1), outputCount(1), weights(3), nodes(3), biases(3), rand(std::random_device()()) {
 
@@ -171,18 +196,35 @@ public:
 			for (uint32_t k = 0; k < hiddenNodeCount; k++) {
 				dotProd += lastLayerNodes[k] * weightsToLast[k];
 			}
-
+			 
 			nodeFromLayer(hiddenLayerCount + 1, j) = sigmoid(dotProd);
 		}
 
 		delete[] lastLayerNodes, weightsToLast;
 
-		return std::vector<float>(nodes.begin() + inputCount + hiddenNodeCount * hiddenLayerCount, nodes.begin() + inputCount + hiddenNodeCount * hiddenLayerCount + outputCount);
+		return std::vector<float>(nodes.begin() + inputCount + hiddenNodeCount * hiddenLayerCount, nodes.begin() + inputCount + hiddenNodeCount * hiddenLayerCount + outputCount); // Return outputs
 	}
 
-	template<class InpArrayType>
-	inline void TrainNetwork(std::pair<InpArrayType, uint32_t>* samples, size_t sampleCount, size_t generationCount) {
+	template<class SampleInputArrayType>
+	inline void TrainNetwork(std::pair<SampleInputArrayType, size_t>* samples, size_t sampleCount, size_t generationCount) {
+		float avgCost = getAvgCost(samples, sampleCount);
 
+		for (int i = 0; i < generationCount; i++) {
+			float cost2 = 0;
+			std::vector<float> weightsTemp(weights);
+			std::vector<float> biasesTemp(biases);
+			AdjustRandom(20.f/(i+1.f));
+			cost2 = getAvgCost(samples, sampleCount);
+			if (cost2 > avgCost) {
+				weights = weightsTemp;
+				biases = biasesTemp;
+			}
+			else
+				avgCost = cost2;
+
+			std::cout << avgCost << "\n";
+
+		}
 	}
 };
 
