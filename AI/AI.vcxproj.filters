@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AI.cpp">
+    <ClCompile Include="src\Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nova.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -941,7 +944,7 @@
     <ClInclude Include="dep\Eigen\src\UmfPackSupport\UmfPackSupport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AI.h">
+    <ClInclude Include="include\Nova.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -976,5 +979,9 @@
     <None Include="dep\Eigen\SuperLUSupport" />
     <None Include="dep\Eigen\SVD" />
     <None Include="dep\Eigen\UmfPackSupport" />
+    <None Include="data\trainimages\train-images.idx3-ubyte" />
+    <None Include="data\trainlabels\train-labels.idx1-ubyte" />
+    <None Include="src\data\trainimages\train-images.idx3-ubyte" />
+    <None Include="src\data\trainlabels\train-labels.idx1-ubyte" />
   </ItemGroup>
 </Project>

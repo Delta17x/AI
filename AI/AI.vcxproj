@@ -24,6 +24,7 @@
     <ProjectGuid>{137c2f6e-1fd8-4b46-97bf-7ee29a021684}</ProjectGuid>
     <RootNamespace>AI</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Nova</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -140,7 +141,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\AI.cpp" />
+    <ClCompile Include="src\Debug.cpp" />
+    <ClCompile Include="src\Nova.cpp">
+      <FileType>CppCode</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dep\Eigen\src\Cholesky\LDLT.h" />
@@ -450,9 +454,11 @@
     <ClInclude Include="dep\Eigen\src\SVD\SVDBase.h" />
     <ClInclude Include="dep\Eigen\src\SVD\UpperBidiagonalization.h" />
     <ClInclude Include="dep\Eigen\src\UmfPackSupport\UmfPackSupport.h" />
-    <ClInclude Include="include\AI.h" />
+    <ClInclude Include="include\Nova.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\trainimages\train-images.idx3-ubyte" />
+    <None Include="data\trainlabels\train-labels.idx1-ubyte" />
     <None Include="dep\Eigen\Cholesky" />
     <None Include="dep\Eigen\CholmodSupport" />
     <None Include="dep\Eigen\Core" />
@@ -483,6 +489,8 @@
     <None Include="dep\Eigen\SuperLUSupport" />
     <None Include="dep\Eigen\SVD" />
     <None Include="dep\Eigen\UmfPackSupport" />
+    <None Include="src\data\trainimages\train-images.idx3-ubyte" />
+    <None Include="src\data\trainlabels\train-labels.idx1-ubyte" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
